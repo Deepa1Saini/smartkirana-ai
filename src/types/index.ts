@@ -71,6 +71,7 @@ export interface Alert {
   type: 'low_stock' | 'out_of_stock' | 'expiry_near' | 'expired' | 'dead_stock';
   productId: string;
   variantId?: string;
+  title: string;
   message: string;
   severity: 'low' | 'medium' | 'high' | 'critical';
   isRead: boolean;
@@ -85,6 +86,8 @@ export interface AIInsight {
   title: string;
   description: string;
   confidence: number;
+  priority: 'low' | 'medium' | 'high';
+  suggestedAction?: string;
   data: Record<string, unknown>;
   createdAt: Date;
 }
@@ -97,4 +100,13 @@ export interface Subscription {
   razorpaySubscriptionId?: string;
   startDate: Date;
   endDate: Date;
+}
+
+// Extended product view with variant data
+export interface ProductWithVariant extends Product {
+  sku: string;
+  totalStock: number;
+  sellingPrice: number;
+  mrp: number;
+  unit: string;
 }

@@ -34,11 +34,11 @@ export const mockVariants: Variant[] = [
 ];
 
 export const mockAlerts: Alert[] = [
-  { id: 'a1', storeId: 'store1', type: 'out_of_stock', productId: 'p6', message: 'Tata Salt (1kg) is out of stock!', severity: 'critical', isRead: false, createdAt: new Date() },
-  { id: 'a2', storeId: 'store1', type: 'low_stock', productId: 'p3', variantId: 'v4', message: 'Coca Cola 250ml low stock (3 units)', severity: 'high', isRead: false, createdAt: new Date() },
-  { id: 'a3', storeId: 'store1', type: 'expiry_near', productId: 'p5', variantId: 'v8', message: 'Amoxicillin batch AMX2024A expires in 75 days', severity: 'medium', isRead: false, createdAt: new Date() },
-  { id: 'a4', storeId: 'store1', type: 'low_stock', productId: 'p4', variantId: 'v6', message: 'Paracetamol 500mg (10 tab) low stock', severity: 'high', isRead: true, createdAt: new Date() },
-  { id: 'a5', storeId: 'store1', type: 'low_stock', productId: 'p1', variantId: 'v2', message: 'Amul Butter 500g running low (8 units)', severity: 'medium', isRead: true, createdAt: new Date() },
+  { id: 'a1', storeId: 'store1', type: 'out_of_stock', productId: 'p6', title: 'Out of Stock', message: 'Tata Salt (1kg) is out of stock!', severity: 'critical', isRead: false, createdAt: new Date() },
+  { id: 'a2', storeId: 'store1', type: 'low_stock', productId: 'p3', variantId: 'v4', title: 'Low Stock Warning', message: 'Coca Cola 250ml low stock (3 units)', severity: 'high', isRead: false, createdAt: new Date() },
+  { id: 'a3', storeId: 'store1', type: 'expiry_near', productId: 'p5', variantId: 'v8', title: 'Expiry Alert', message: 'Amoxicillin batch AMX2024A expires in 75 days', severity: 'medium', isRead: false, createdAt: new Date() },
+  { id: 'a4', storeId: 'store1', type: 'low_stock', productId: 'p4', variantId: 'v6', title: 'Low Stock', message: 'Paracetamol 500mg (10 tab) low stock', severity: 'high', isRead: true, createdAt: new Date() },
+  { id: 'a5', storeId: 'store1', type: 'low_stock', productId: 'p1', variantId: 'v2', title: 'Stock Running Low', message: 'Amul Butter 500g running low (8 units)', severity: 'medium', isRead: true, createdAt: new Date() },
 ];
 
 export const mockAIInsights: AIInsight[] = [
@@ -49,7 +49,9 @@ export const mockAIInsights: AIInsight[] = [
     productId: 'p2',
     title: 'Parle-G demand spike expected',
     description: 'Based on festival season trends, expect 40% higher sales next week. Current stock: 150 units. Recommended: Order 100 more.',
-    confidence: 0.87,
+    confidence: 87,
+    priority: 'high',
+    suggestedAction: 'Order 100 more units of Parle-G before the weekend rush',
     data: { predictedSales: 210, currentStock: 150, recommendedOrder: 100 },
     createdAt: new Date(),
   },
@@ -60,7 +62,9 @@ export const mockAIInsights: AIInsight[] = [
     productId: 'p3',
     title: 'Reorder Coca Cola 250ml',
     description: 'Stock will run out in 2 days based on current sales velocity (5/day). Weekend approaching - higher demand expected.',
-    confidence: 0.92,
+    confidence: 92,
+    priority: 'high',
+    suggestedAction: 'Place order for 48 units of Coca Cola 250ml immediately',
     data: { daysUntilStockout: 2, avgDailySales: 5, suggestedQuantity: 48 },
     createdAt: new Date(),
   },
@@ -71,7 +75,9 @@ export const mockAIInsights: AIInsight[] = [
     productId: 'p1',
     title: 'Slow moving: Amul Butter 500g',
     description: 'No sales in last 12 days. Consider promotional discount or bundle with other products.',
-    confidence: 0.78,
+    confidence: 78,
+    priority: 'medium',
+    suggestedAction: 'Create a 10% discount offer or bundle with bread',
     data: { daysSinceLastSale: 12, stockValue: 2040 },
     createdAt: new Date(),
   },
@@ -82,8 +88,24 @@ export const mockSalesData = {
   yesterday: 10890,
   thisWeek: 78500,
   thisMonth: 324000,
+  totalSales: 324000,
   growth: 14.3,
 };
+
+// Products with variant data combined for easy display
+export const mockProductsWithVariants = mockProducts.map((product) => {
+  const variants = mockVariants.filter(v => v.productId === product.id);
+  const totalStock = variants.reduce((sum, v) => sum + v.quantity, 0);
+  const firstVariant = variants[0];
+  return {
+    ...product,
+    sku: product.sku || '',
+    totalStock,
+    sellingPrice: firstVariant?.sellingPrice || 0,
+    mrp: firstVariant?.mrp || 0,
+    unit: firstVariant?.unit || product.baseUnit,
+  };
+});
 
 export const mockTopProducts = [
   { name: 'Parle-G Biscuit', sales: 2450, units: 245 },
